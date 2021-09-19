@@ -89,16 +89,11 @@ public class FileExplorerRestController {
 	
 	@GetMapping(value="/{pid}/file/path/{itemId}",			
 			produces= {MediaType.APPLICATION_JSON_VALUE})
-	public Map<String, String> getFilePath(@PathVariable String itemId){
+	public Map<String, String> getFilePath(@PathVariable String pid, @PathVariable String itemId ){
 		Map<String, String> output =  new HashMap<String, String>();
 		StringBuilder path = new StringBuilder();
-		FileExplorer explorer = null;
 		try {
-			
-			while(explorer == null || explorer.getParentId() == null) {
-					
-			}
-			
+			path.append(getFileFullPath(itemId, pid));			
 			output.put("status", "success") ;
 			output.put("path", path.toString());
 		} catch (Exception e) {
@@ -106,6 +101,26 @@ public class FileExplorerRestController {
 			output.put("status", "failed") ;
 		}		
 		return output;
+		
+	}
+	
+	private String getFileFullPath(String itemId, String pid) {
+		StringBuilder path =  new StringBuilder();
+		
+		if(itemId!= null && pid != null) {
+			Optional<FileExplorer> explorer = null;
+			FileExplorerPK explorerPK = new FileExplorerPK();
+			explorerPK.setItemId(itemId);
+			explorerPK.setPid(pid);
+			explorer = fileExplorerRepository.findById(explorerPK);
+			if(explorer.isPresent() && explorer.get().getParentId() != null) {
+				path.append(getFileFullPath(explorer.get().getParentId(), pid));
+			}
+			path.append("/");
+			path.append(explorer.get().getName());						
+		}
+		
+		return path.toString();
 		
 	}
 	
