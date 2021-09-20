@@ -124,5 +124,26 @@ public class FileExplorerRestController {
 		
 	}
 	
+	@GetMapping(value="/{pid}/file/parent/{itemId}",			
+			produces= {MediaType.APPLICATION_JSON_VALUE})
+	public Optional<FileExplorer> getFileParentDetails(@PathVariable String pid, @PathVariable String itemId ){
+		try {
+			Optional<FileExplorer> explorer =  Optional.empty();
+			FileExplorerPK explorerPK =  new FileExplorerPK();
+			explorerPK.setItemId(itemId);
+			explorerPK.setPid(pid);
+			explorer = fileExplorerRepository.findById(explorerPK);
+			if(explorer.isEmpty()) {
+				return null;
+			}
+			explorerPK.setItemId(explorer.get().getParentId());
+			return fileExplorerRepository.findById(explorerPK);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;		
+		
+	}
+	
 
 }
