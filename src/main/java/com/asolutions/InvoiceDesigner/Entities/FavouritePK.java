@@ -2,24 +2,23 @@ package com.asolutions.InvoiceDesigner.Entities;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class FileExplorerPK implements Serializable {
+public class FavouritePK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name="ID")
-	private String itemId;
+	private String userid;
 	private String pid;
+	private String itemid;
 
-	public String getItemId() {
-		return itemId;
+	public String getUserid() {
+		return userid;
 	}
 
-	public void setItemId(String itemId) {
-		this.itemId = itemId;
+	public void setUserid(String userid) {
+		this.userid = userid;
 	}
 
 	public String getPid() {
@@ -28,9 +27,19 @@ public class FileExplorerPK implements Serializable {
 
 	public void setPid(String pid) {
 		this.pid = pid;
+	}	
+
+	public String getItemid() {
+		return itemid;
+	}
+
+	public void setItemid(String itemid) {
+		this.itemid = itemid;
 	}
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+		
+	
 }
