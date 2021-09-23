@@ -6,11 +6,11 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import com.asolutions.InvoiceDesigner.Entities.FavouritePK;
-import com.asolutions.InvoiceDesigner.Entities.Favourites;
+import com.asolutions.InvoiceDesigner.Entities.Favourite;
 
 @Repository
-public interface FavouritesRepository extends CrudRepository<Favourites, FavouritePK> {
+public interface FavouriteRepository extends CrudRepository<Favourite, FavouritePK> {
 	
-	List<Favourites> findById_UseridAndId_Pid(String userid, String pid);
+	List<Favourite> findById_UseridAndId_Pid(String userid, String pid);
 
 }

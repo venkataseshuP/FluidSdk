@@ -7,7 +7,7 @@ import javax.persistence.JoinColumns;
 import javax.persistence.OneToOne;
 
 @Entity
-public class Favourites {
+public class Favourite {
 
 	@EmbeddedId
 	private FavouritePK id;
