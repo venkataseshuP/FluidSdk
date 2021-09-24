@@ -38,9 +38,9 @@ public class FavouriteRestController {
 	@PostMapping(value = "/favourite", 
 			consumes = { MediaType.APPLICATION_JSON_VALUE }, 
 			produces = { MediaType.APPLICATION_JSON_VALUE })
-	public Iterable<Favourite> addFavourite(@RequestBody Favourite favourite) {
-		favouritesRepository.save(favourite);
-		return favouritesRepository.findById_UseridAndId_Pid(favourite.getId().getUserid(),favourite.getId().getPid());
+	public Favourite addFavourite(@RequestBody Favourite favourite) {
+		return favouritesRepository.save(favourite);
+		
 	}
 	
 	@DeleteMapping(value="/{userId}/{pid}/favourite/{itemId}", 
