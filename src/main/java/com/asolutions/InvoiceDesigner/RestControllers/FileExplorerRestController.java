@@ -27,6 +27,9 @@ public class FileExplorerRestController {
 	@Autowired
 	private FileExplorerRepository fileExplorerRepository;
 	
+	@Autowired
+	private SwaggerSpecController swaggerSpecController;
+	
 	@PostMapping(value="/{pid}/file",
 			consumes= {MediaType.APPLICATION_JSON_VALUE},
 			produces= {MediaType.APPLICATION_JSON_VALUE})
@@ -78,6 +81,7 @@ public class FileExplorerRestController {
 			FileExplorerPK explorerPK =  new FileExplorerPK();
 			explorerPK.setItemId(itemId);
 			explorerPK.setPid(pid);
+			deleteFileByType(fileExplorerRepository.findById(explorerPK).get());
 			fileExplorerRepository.deleteById(explorerPK);
 			output.put("status", "success") ;
 		} catch (Exception e) {
@@ -85,6 +89,17 @@ public class FileExplorerRestController {
 			output.put("status", "failed") ;
 		}		
 		return output;
+	}
+	
+	private void deleteFileByType(FileExplorer file) {
+		if(file == null) return;
+		switch (file.getType()) {
+		case "4":
+			this.swaggerSpecController.deleteFile(file.getId().getItemId(), file.getId().getPid());
+			break;
+		default:
+			break;
+		}
 	}
 	
 	@GetMapping(value="/{pid}/file/path/{itemId}",			
