@@ -11,5 +11,5 @@ import com.asolutions.InvoiceDesigner.Entities.TypesrepoPK;
 @Repository
 public interface TypesrepoRepository extends CrudRepository<Typesrepo, TypesrepoPK>{
 
-	List<Typesrepo> findByIdTemplateid(String templateId);
+	List<Typesrepo> findByTemplateId(String templateId);
 }

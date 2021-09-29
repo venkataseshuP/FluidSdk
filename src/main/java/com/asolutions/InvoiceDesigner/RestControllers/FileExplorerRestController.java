@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.asolutions.InvoiceDesigner.Entities.FileExplorer;
 import com.asolutions.InvoiceDesigner.Entities.FileExplorerPK;
+import com.asolutions.InvoiceDesigner.Entities.Template;
 import com.asolutions.InvoiceDesigner.Repositories.FileExplorerRepository;
 
 @RestController
@@ -30,6 +31,9 @@ public class FileExplorerRestController {
 	@Autowired
 	private SwaggerSpecController swaggerSpecController;
 	
+	@Autowired
+	private TemplateRestController templateRestController;
+	
 	@PostMapping(value="/{pid}/file",
 			consumes= {MediaType.APPLICATION_JSON_VALUE},
 			produces= {MediaType.APPLICATION_JSON_VALUE})
@@ -39,7 +43,21 @@ public class FileExplorerRestController {
         UUID uuid = UUID.randomUUID();
 		fileExplorerPK.setItemId(uuid.toString());
 		fileExplorer.setId(fileExplorerPK);
+		createFileByType(fileExplorer);
 		return fileExplorerRepository.save(fileExplorer);
+	}
+	
+	private void createFileByType(FileExplorer file) {
+		if(file == null) return;
+		switch (file.getType()) {
+		case "2":
+			Template template =  new Template();
+			template.setTemplateId(file.getId().getItemId());
+			this.templateRestController.createTemplate(template);
+			break;
+		default:
+			break;
+		}
 	}
 	
 	@GetMapping(value="/{pid}/files",

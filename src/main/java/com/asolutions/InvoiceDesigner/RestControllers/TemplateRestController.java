@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -76,13 +77,15 @@ public class TemplateRestController {
 			consumes= {MediaType.APPLICATION_JSON_VALUE},
 			produces= {MediaType.APPLICATION_JSON_VALUE})
 	public Typesrepo createTypesrepo(@RequestBody Typesrepo typesrepo){
+        UUID uuid = UUID.randomUUID();
+		typesrepo.getId().setTypeId(uuid.toString());
 		return typesrepoRepository.save(typesrepo);
 	}
 	
 	@GetMapping(value="/template/{templateId}/nativecomponnts",
 			produces= {MediaType.APPLICATION_JSON_VALUE})
 	public Iterable<Typesrepo> getNativeComponents(@PathVariable String templateId){		
-		return typesrepoRepository.findByIdTemplateid(templateId);
+		return typesrepoRepository.findByTemplateId(templateId);
 	}
 //	-------------------------  ComplexType APIs  ------------------------------------------------------
 	
@@ -118,7 +121,7 @@ public class TemplateRestController {
 	
 //	-------------------------  RefferedTemplates APIs  ------------------------------------------------------
 	
-	@PostMapping(value="/template/typesrep",
+	@PostMapping(value="/refferedtemplate",
 			consumes= {MediaType.APPLICATION_JSON_VALUE},
 			produces= {MediaType.APPLICATION_JSON_VALUE})
 	public RefferedTemplates createTypesrepo(@RequestBody RefferedTemplates refferedTemplate){
