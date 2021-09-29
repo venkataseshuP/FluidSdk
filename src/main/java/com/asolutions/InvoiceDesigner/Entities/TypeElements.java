@@ -1,5 +1,6 @@
 package com.asolutions.InvoiceDesigner.Entities;
 
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -8,31 +9,18 @@ import javax.persistence.UniqueConstraint;
 @Table(uniqueConstraints={@UniqueConstraint(columnNames = {"typeId" , "namespaceId", "slNo", "elementName"})})
 public class TypeElements {
 	
-	private String typeId;
-	private String namespaceId;
-	private String slNo;
+	@EmbeddedId
+	private TypeElementsPK id;
 	private String elementName;
 	private String elementTypeId;
 	private String elementDesc;
 	private String minOccurs;
 	private String maxOccurs;
-	public String getTypeId() {
-		return typeId;
+	public TypeElementsPK getId() {
+		return id;
 	}
-	public void setTypeId(String typeId) {
-		this.typeId = typeId;
-	}
-	public String getNamespaceId() {
-		return namespaceId;
-	}
-	public void setNamespaceId(String namespaceId) {
-		this.namespaceId = namespaceId;
-	}
-	public String getSlNo() {
-		return slNo;
-	}
-	public void setSlNo(String slNo) {
-		this.slNo = slNo;
+	public void setId(TypeElementsPK id) {
+		this.id = id;
 	}
 	public String getElementName() {
 		return elementName;
@@ -64,6 +52,7 @@ public class TypeElements {
 	public void setMaxOccurs(String maxOccurs) {
 		this.maxOccurs = maxOccurs;
 	}
+	
 	
 	
 }

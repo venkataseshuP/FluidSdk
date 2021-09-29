@@ -1,39 +1,27 @@
 package com.asolutions.InvoiceDesigner.Entities;
 
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-
-import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(uniqueConstraints={@UniqueConstraint(columnNames = {"namespaceId" , "typeName"}),
 						  @UniqueConstraint(columnNames = {"typeId" , "namespaceId"})})
 public class Typesrepo {
 
-	@Id
-	@GeneratedValue(generator = "uuid")
-	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	private String typeId;
-	private String namespaceId;
+	@EmbeddedId
+	private TypesrepoPK id;
 	private String templateId;
 	private String typeName;
 	private String desc;
 	private String type;
 	
-	public String getTypeId() {
-		return typeId;
+	public TypesrepoPK getId() {
+		return id;
 	}
-	public void setTypeId(String typeId) {
-		this.typeId = typeId;
-	}
-	public String getNamespaceId() {
-		return namespaceId;
-	}
-	public void setNamespaceId(String namespaceId) {
-		this.namespaceId = namespaceId;
+	public void setId(TypesrepoPK id) {
+		this.id = id;
 	}
 	public String getTemplateId() {
 		return templateId;
@@ -59,5 +47,7 @@ public class Typesrepo {
 	public void setType(String type) {
 		this.type = type;
 	}
+	
+	
 	
 }
