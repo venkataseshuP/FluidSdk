@@ -24,7 +24,7 @@ public class FavouriteRestController {
 	@Autowired
 	private FavouriteRepository favouritesRepository;
 
-	@GetMapping(value = "/{userid}/{pid}/files", produces = { MediaType.APPLICATION_JSON_VALUE })
+	@GetMapping(value = "/{userid}/{pid}/favourites", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public Iterable<Favourite> getFavourites(@PathVariable String userid, @PathVariable String pid) {
 		try {
 			return favouritesRepository.findById_UseridAndId_Pid(userid, pid);
@@ -59,6 +59,16 @@ public class FavouriteRestController {
 			output.put("status", "failed") ;
 		}		
 		return output;
+	}
+	
+	@DeleteMapping(value="/{pid}/favourite/{itemId}")
+	public void deleteFavouriteByItemId(@PathVariable String pid,@PathVariable String itemId) {
+		try {
+			favouritesRepository.deleteByItemId_Pid(itemId, pid);
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.print(e);
+		}		
 	}
 
 }
