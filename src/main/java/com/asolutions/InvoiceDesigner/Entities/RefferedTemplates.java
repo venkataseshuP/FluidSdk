@@ -1,5 +1,6 @@
 package com.asolutions.InvoiceDesigner.Entities;
 
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -8,20 +9,15 @@ import javax.persistence.UniqueConstraint;
 @Table(uniqueConstraints={@UniqueConstraint(columnNames = {"templateId" , "slNo", "refferedTemplateId"})})
 public class RefferedTemplates {
 
-	private String templateId;
-	private String slNo;
+	@EmbeddedId
+	private RefferedTemplatesPK id;
 	private String refferedTemplateId;
-	public String getTemplateId() {
-		return templateId;
+	
+	public RefferedTemplatesPK getId() {
+		return id;
 	}
-	public void setTemplateId(String templateId) {
-		this.templateId = templateId;
-	}
-	public String getSlNo() {
-		return slNo;
-	}
-	public void setSlNo(String slNo) {
-		this.slNo = slNo;
+	public void setId(RefferedTemplatesPK id) {
+		this.id = id;
 	}
 	public String getRefferedTemplateId() {
 		return refferedTemplateId;
@@ -29,5 +25,7 @@ public class RefferedTemplates {
 	public void setRefferedTemplateId(String refferedTemplateId) {
 		this.refferedTemplateId = refferedTemplateId;
 	}
+
+		
 	
 }
