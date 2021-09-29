@@ -9,7 +9,8 @@ import javax.persistence.UniqueConstraint;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(uniqueConstraints={@UniqueConstraint(columnNames = {"namespaceId" , "typeName"})})
+@Table(uniqueConstraints={@UniqueConstraint(columnNames = {"namespaceId" , "typeName"}),
+						  @UniqueConstraint(columnNames = {"typeId" , "namespaceId"})})
 public class Typesrepo {
 
 	@Id
