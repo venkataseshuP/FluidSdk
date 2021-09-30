@@ -160,9 +160,28 @@ public class FileExplorerRestController {
 			path.append("/");
 			path.append(explorer.get().getName());						
 		}
-		
+		if(!path.isEmpty()) {
+			path.append(getfileExtenstion(itemId,pid));
+		}
 		return path.toString();
 		
+	}
+	
+	private String getfileExtenstion(String itemId, String pid) {
+
+		Optional<FileExplorer> explorer = null;
+		FileExplorerPK explorerPK = new FileExplorerPK();
+		explorerPK.setItemId(itemId);
+		explorerPK.setPid(pid);
+		explorer = fileExplorerRepository.findById(explorerPK);
+		switch (explorer.get().getType()) {
+		case "2":
+			return ".dt";
+		case "4":
+			return ".spec";
+		}
+
+		return "";
 	}
 	
 	@GetMapping(value="/{pid}/file/parent/{itemId}",			
