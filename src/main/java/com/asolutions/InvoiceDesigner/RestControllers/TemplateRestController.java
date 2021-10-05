@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -81,6 +82,13 @@ public class TemplateRestController {
 	public Typesrepo createTypesrepo(@RequestBody Typesrepo typesrepo){
         UUID uuid = UUID.randomUUID();
 		typesrepo.getId().setTypeId(uuid.toString());
+		return typesrepoRepository.save(typesrepo);
+	}
+	
+	@PutMapping(value="/template/typesrep",
+			consumes= {MediaType.APPLICATION_JSON_VALUE},
+			produces= {MediaType.APPLICATION_JSON_VALUE})
+	public Typesrepo updateTypesrepo(@RequestBody Typesrepo typesrepo){
 		return typesrepoRepository.save(typesrepo);
 	}
 	
