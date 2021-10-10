@@ -18,6 +18,7 @@ public class FileExplorer {
 	private String parentId;
 	private String name;
 	private String type;
+	private String path;
 	@Transient
 	private boolean showChildren = false;
 	
@@ -76,6 +77,14 @@ public class FileExplorer {
 
 	public void setChildren(List<FileExplorer> children) {
 		this.children = children;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	

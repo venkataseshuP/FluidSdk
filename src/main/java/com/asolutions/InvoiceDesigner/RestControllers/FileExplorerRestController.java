@@ -1,6 +1,7 @@
 package com.asolutions.InvoiceDesigner.RestControllers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -46,6 +47,8 @@ public class FileExplorerRestController {
         UUID uuid = UUID.randomUUID();
 		fileExplorerPK.setItemId(uuid.toString());
 		fileExplorer.setId(fileExplorerPK);
+		String path = getFileFullPath(fileExplorer.getParentId(), pid)+"/"+fileExplorer.getName()+getFileExtensionsByType(fileExplorer.getType());
+		fileExplorer.setPath(path);
 		createFileByType(fileExplorer);
 		return fileExplorerRepository.save(fileExplorer);
 	}
@@ -91,7 +94,13 @@ public class FileExplorerRestController {
 			produces= {MediaType.APPLICATION_JSON_VALUE},
 			consumes= {MediaType.APPLICATION_JSON_VALUE})
 	public FileExplorer updateFile(@RequestBody FileExplorer fileExplorer) {
-		return fileExplorerRepository.save(fileExplorer);
+		String path = getFileFullPath(fileExplorer.getParentId(), fileExplorer.getId().getPid())+"/"+fileExplorer.getName()+getFileExtensionsByType(fileExplorer.getType());
+		fileExplorer.setPath(path);
+		fileExplorerRepository.save(fileExplorer);
+		if(fileExplorer.getType().equals("1")) {
+			updatePaths(fileExplorer);
+		}
+		return (fileExplorer);
 	}
 	
 	@DeleteMapping(value="/{pid}/file/{itemId}",			
@@ -174,13 +183,16 @@ public class FileExplorerRestController {
 		explorerPK.setItemId(itemId);
 		explorerPK.setPid(pid);
 		explorer = fileExplorerRepository.findById(explorerPK);
-		switch (explorer.get().getType()) {
+		return getFileExtensionsByType(explorer.get().getType());
+	}
+	
+	private String getFileExtensionsByType(String type) {
+		switch (type) {
 		case "2":
 			return ".dt";
 		case "4":
 			return ".spec";
 		}
-
 		return "";
 	}
 	
@@ -203,6 +215,19 @@ public class FileExplorerRestController {
 		}
 		return null;		
 		
-	}	
+	}
+	
+	private void updatePaths(FileExplorer fileExplorer) {
+		if(fileExplorer.getType().equals("1")) {			
+			List<FileExplorer> childcFiles =  fileExplorerRepository.findByIdPidAndParentId(fileExplorer.getId().getPid(),fileExplorer.getId().getItemId());
+			for(FileExplorer explorer: childcFiles) {			
+				updatePaths(explorer);
+			}
+		}
+		String path = getFileFullPath(fileExplorer.getParentId(), fileExplorer.getId().getPid())+"/"+fileExplorer.getName()+getFileExtensionsByType(fileExplorer.getType());
+		fileExplorer.setPath(path);
+		fileExplorerRepository.save(fileExplorer);
+		return;
+	}
 
 }

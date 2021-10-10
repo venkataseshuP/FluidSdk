@@ -12,4 +12,5 @@ import com.asolutions.InvoiceDesigner.Entities.FileExplorerPK;
 public interface FileExplorerRepository extends CrudRepository<FileExplorer, FileExplorerPK> {
 
 	List<FileExplorer> findByIdPid(String pid);
+	List<FileExplorer> findByIdPidAndParentId(String pid, String parentId);
 }
