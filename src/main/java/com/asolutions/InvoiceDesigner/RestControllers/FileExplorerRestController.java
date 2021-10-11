@@ -230,5 +230,10 @@ public class FileExplorerRestController {
 	public List<Object[]> getFilesBySamplePath(@RequestBody String samplepath, @PathVariable String pid) {
 		return fileExplorerRepository.findByIdPidAndPath(samplepath, pid);
 	}
+	
+	@PostMapping(value = "/{pid}/filesByType/{type}")
+	public List<Object[]> getFilesBySampleType(@RequestBody String samplepath, @PathVariable String type, @PathVariable String pid) {
+		return fileExplorerRepository.findByIdPidAndTypeAndPath(pid, type, samplepath);
+	}	
 
 }

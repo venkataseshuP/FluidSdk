@@ -22,4 +22,8 @@ public interface FileExplorerRepository extends CrudRepository<FileExplorer, Fil
 	@Modifying
     @Query(value = "SELECT c.id , c.path , c.type , c.name FROM FileExplorer c WHERE UPPER(c.path) like %:path% and c.id.pid = :pid")
 	List<Object[]> findByIdPidAndPath(@Param("path") String path, @Param("pid") String pid);
+	@Transactional
+	@Modifying
+    @Query(value = "SELECT c.id , c.path , c.type , c.name FROM FileExplorer c WHERE UPPER(c.path) like %:path% and c.type =:type and c.id.pid = :pid")
+	List<Object[]> findByIdPidAndTypeAndPath(@Param("pid") String pid, @Param("type") String type, @Param("path") String path);	
 }
