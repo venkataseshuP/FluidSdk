@@ -1,5 +1,6 @@
 package com.asolutions.InvoiceDesigner.RestControllers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,12 +18,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.asolutions.InvoiceDesigner.Entities.ComplexType;
-import com.asolutions.InvoiceDesigner.Entities.RefferedTemplates;
+import com.asolutions.InvoiceDesigner.Entities.FileExplorerPK;
+import com.asolutions.InvoiceDesigner.Entities.RefferedTemplate;
 import com.asolutions.InvoiceDesigner.Entities.SimpleType;
 import com.asolutions.InvoiceDesigner.Entities.Template;
 import com.asolutions.InvoiceDesigner.Entities.TypeElements;
 import com.asolutions.InvoiceDesigner.Entities.Typesrepo;
 import com.asolutions.InvoiceDesigner.Repositories.ComplexTypeRepository;
+import com.asolutions.InvoiceDesigner.Repositories.FileExplorerRepository;
 import com.asolutions.InvoiceDesigner.Repositories.RefferedTemplatesRepository;
 import com.asolutions.InvoiceDesigner.Repositories.SimpleTypeRepository;
 import com.asolutions.InvoiceDesigner.Repositories.TemplateRepository;
@@ -33,6 +36,8 @@ import com.asolutions.InvoiceDesigner.Repositories.TypesrepoRepository;
 @CrossOrigin(origins = "*")
 public class TemplateRestController {
 	
+	@Autowired
+	private FileExplorerRepository fileExplorerRepository;
 	@Autowired
 	private TemplateRepository templateRepository;
 	@Autowired
@@ -134,8 +139,26 @@ public class TemplateRestController {
 	@PostMapping(value="/refferedtemplate",
 			consumes= {MediaType.APPLICATION_JSON_VALUE},
 			produces= {MediaType.APPLICATION_JSON_VALUE})
-	public RefferedTemplates createTypesrepo(@RequestBody RefferedTemplates refferedTemplate){
+	public RefferedTemplate createTypesrepo(@RequestBody RefferedTemplate refferedTemplate){
 		return refferedTemplatesRepository.save(refferedTemplate);
-	}	
+	}
+	
+	@GetMapping(value="{pid}/referredtemplates/{templateId}")
+	public List<Map<String, Object>> getRefferedTemplates(@PathVariable String pid, @PathVariable String templateId){
+		List<Map<String, Object>> response =  new ArrayList<Map<String,Object>>();
+		List<RefferedTemplate> refferedTemplates = refferedTemplatesRepository.findByIdTemplateId(templateId);
+		for(RefferedTemplate refferedTemplate: refferedTemplates ) {
+			Map<String, Object> templateDetails =  new HashMap<String, Object>();
+			FileExplorerPK explorerPK =  new FileExplorerPK();
+			explorerPK.setPid(pid);
+			explorerPK.setItemId(refferedTemplate.getId().getRefferedTemplateId());
+			templateDetails.put("details", fileExplorerRepository.findById(explorerPK));
+			templateDetails.put("nativeComponents", getNativeComponents(refferedTemplate.getId().getRefferedTemplateId()));
+			response.add(templateDetails);
+		}
+		return response;	
+	}
+	
+	
 }
 

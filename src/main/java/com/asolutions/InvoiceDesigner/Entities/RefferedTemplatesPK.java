@@ -10,18 +10,19 @@ public class RefferedTemplatesPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String templateId;
-	private String slNo;
+	private String refferedTemplateId;
 	public String getTemplateId() {
 		return templateId;
 	}
 	public void setTemplateId(String templateId) {
 		this.templateId = templateId;
 	}
-	public String getSlNo() {
-		return slNo;
+	
+	public String getRefferedTemplateId() {
+		return refferedTemplateId;
 	}
-	public void setSlNo(String slNo) {
-		this.slNo = slNo;
+	public void setRefferedTemplateId(String refferedTemplateId) {
+		this.refferedTemplateId = refferedTemplateId;
 	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;
