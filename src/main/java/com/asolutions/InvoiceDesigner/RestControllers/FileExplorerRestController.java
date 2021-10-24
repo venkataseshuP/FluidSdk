@@ -188,7 +188,7 @@ public class FileExplorerRestController {
 		case "4":
 			return ".spec";
 		case "5":
-			return ".api";			
+			return ".apidoc";			
 		}
 		return "";
 	}
