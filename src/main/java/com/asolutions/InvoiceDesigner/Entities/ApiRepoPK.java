@@ -12,9 +12,6 @@ public class ApiRepoPK implements Serializable {
 	private String apidocId;
 	private String pid;
 	private String apiid;	
-	private String endpointId;
-	private String method;
-	private String url;
 	
 	
 	
@@ -32,24 +29,6 @@ public class ApiRepoPK implements Serializable {
 	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;
-	}
-	public String getEndpointId() {
-		return endpointId;
-	}
-	public void setEndpointId(String endpointId) {
-		this.endpointId = endpointId;
-	}
-	public String getMethod() {
-		return method;
-	}
-	public void setMethod(String method) {
-		this.method = method;
-	}
-	public String getUrl() {
-		return url;
-	}
-	public void setUrl(String url) {
-		this.url = url;
 	}
 	public String getApidocId() {
 		return apidocId;

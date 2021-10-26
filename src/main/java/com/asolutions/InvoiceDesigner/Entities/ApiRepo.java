@@ -10,6 +10,33 @@ public class ApiRepo {
 	private ApiRepoPK id;
 	private String desc;
 	private String apiName;
+	private String endpointId;
+	private String method;
+	private String url;
+
+	public String getEndpointId() {
+		return endpointId;
+	}
+
+	public void setEndpointId(String endpointId) {
+		this.endpointId = endpointId;
+	}
+
+	public String getMethod() {
+		return method;
+	}
+
+	public void setMethod(String method) {
+		this.method = method;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
 	public ApiRepoPK getId() {
 		return id;
