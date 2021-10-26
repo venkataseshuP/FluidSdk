@@ -1,6 +1,7 @@
 package com.asolutions.InvoiceDesigner.RestControllers;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -22,10 +23,10 @@ public class APIRepoController {
 	@Autowired
 	private APIRepoRepository apiRepoRepository;
 	
-	@GetMapping(value = "/{pid}/{apiId}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public List<ApiRepo> getApis(@PathVariable String apiId, @PathVariable String pid) {
+	@GetMapping(value = "/{pid}/apis/{apidocId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public List<ApiRepo> getApis(@PathVariable String apidocId, @PathVariable String pid) {
 		try {
-			return apiRepoRepository.findByIdPidAndId_apiid(pid, apiId);
+			return apiRepoRepository.findByIdPidAndId_apidocId(pid, apidocId);
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -37,6 +38,8 @@ public class APIRepoController {
 			consumes = { MediaType.APPLICATION_JSON_VALUE }, 
 			produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ApiRepo createAPI(@RequestBody ApiRepo api) {
+		UUID uuid = UUID.randomUUID();
+		api.getId().setApiid(uuid.toString());
 		return apiRepoRepository.save(api);
 		
 	}
@@ -45,8 +48,7 @@ public class APIRepoController {
 			consumes = { MediaType.APPLICATION_JSON_VALUE }, 
 			produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ApiRepo updateAPI(@RequestBody ApiRepo api) {
-		return apiRepoRepository.save(api);
-		
+		return apiRepoRepository.save(api);		
 	}
 	
 

@@ -11,6 +11,6 @@ import com.asolutions.InvoiceDesigner.Entities.ApiRepoPK;
 @Repository
 public interface APIRepoRepository extends CrudRepository<ApiRepo, ApiRepoPK>{
 
-	List<ApiRepo> findByIdPidAndId_apiid(String pid, String apiid);
+	List<ApiRepo> findByIdPidAndId_apidocId(String pid, String apidocId);
 	
 }

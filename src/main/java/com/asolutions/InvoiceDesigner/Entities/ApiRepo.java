@@ -10,7 +10,6 @@ public class ApiRepo {
 	private ApiRepoPK id;
 	private String desc;
 	private String apiName;
-	private String type;
 
 	public ApiRepoPK getId() {
 		return id;
@@ -34,14 +33,6 @@ public class ApiRepo {
 
 	public void setApiName(String apiName) {
 		this.apiName = apiName;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
 	}
 
 }

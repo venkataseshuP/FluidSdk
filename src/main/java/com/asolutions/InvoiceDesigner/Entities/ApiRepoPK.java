@@ -9,8 +9,9 @@ public class ApiRepoPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private String apiid;
+	private String apidocId;
 	private String pid;
+	private String apiid;	
 	private String endpointId;
 	private String method;
 	private String url;
@@ -49,6 +50,12 @@ public class ApiRepoPK implements Serializable {
 	}
 	public void setUrl(String url) {
 		this.url = url;
+	}
+	public String getApidocId() {
+		return apidocId;
+	}
+	public void setApidocId(String apidocId) {
+		this.apidocId = apidocId;
 	}
 	
 	
