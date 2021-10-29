@@ -1,6 +1,7 @@
 package com.asolutions.InvoiceDesigner.RestControllers;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.asolutions.InvoiceDesigner.Entities.ApiRepo;
+import com.asolutions.InvoiceDesigner.Entities.ApiRepoPK;
 import com.asolutions.InvoiceDesigner.Repositories.APIRepoRepository;
 
 @RestController
@@ -50,6 +52,17 @@ public class APIRepoController {
 	public ApiRepo updateAPI(@RequestBody ApiRepo api) {
 		return apiRepoRepository.save(api);		
 	}
+	
+	@GetMapping(value = "/{pid}/api/{apiDocId}/{apiId}", 
+			produces = { MediaType.APPLICATION_JSON_VALUE })
+	public Optional<ApiRepo> getAPI( @PathVariable String pid,  @PathVariable String apiDocId,  @PathVariable String apiId) {
+		ApiRepoPK apiRepoPK = new ApiRepoPK();
+		apiRepoPK.setApidocId(apiDocId);
+		apiRepoPK.setApiid(apiId);
+		apiRepoPK.setPid(pid);
+		return apiRepoRepository.findById(apiRepoPK);
+	}
+	
 	
 
 }
