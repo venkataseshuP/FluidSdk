@@ -19,9 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.asolutions.InvoiceDesigner.Entities.ApiPathParam;
 import com.asolutions.InvoiceDesigner.Entities.ApiPathParamPK;
+import com.asolutions.InvoiceDesigner.Entities.ApiQueryParam;
+import com.asolutions.InvoiceDesigner.Entities.ApiQueryParamPK;
 import com.asolutions.InvoiceDesigner.Entities.ApiRepo;
 import com.asolutions.InvoiceDesigner.Entities.ApiRepoPK;
 import com.asolutions.InvoiceDesigner.Repositories.APIPathParamRepository;
+import com.asolutions.InvoiceDesigner.Repositories.APIQueryParamRepository;
 import com.asolutions.InvoiceDesigner.Repositories.APIRepoRepository;
 
 @RestController
@@ -33,6 +36,9 @@ public class APIRepoController {
 	
 	@Autowired
 	private APIPathParamRepository apiPathParamRepository;
+	
+	@Autowired
+	private APIQueryParamRepository apiQueryParamRepository;
 	
 	@GetMapping(value = "/{pid}/apis/{apidocId}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public List<ApiRepo> getApis(@PathVariable String apidocId, @PathVariable String pid) {
@@ -108,6 +114,50 @@ public class APIRepoController {
 			apiPathParamPK.setApiid(apiid);
 			apiPathParamPK.setParamId(paramId);
 			apiPathParamRepository.deleteById(apiPathParamPK);
+			output.put("status", "success");
+		} catch (Exception e) {
+			// TODO: handle exception
+			output.put("status", "failed");
+		}
+		return output;
+	}
+	
+	@PostMapping(value = "/api/queryparam", 
+			consumes = { MediaType.APPLICATION_JSON_VALUE }, 
+			produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ApiQueryParam createQueryParam(@RequestBody ApiQueryParam apiQueryParam) {
+		UUID uuid = UUID.randomUUID();
+		apiQueryParam.getId().setParamId(uuid.toString());
+		return apiQueryParamRepository.save(apiQueryParam);
+	}
+	
+	
+	@PutMapping(value = "/api/queryparam", 
+			consumes = { MediaType.APPLICATION_JSON_VALUE }, 
+			produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ApiQueryParam updateQueryParam(@RequestBody ApiQueryParam apiQueryParam) {
+		if(apiQueryParam.getId().getParamId() == null) {
+			UUID uuid = UUID.randomUUID();
+			apiQueryParam.getId().setParamId(uuid.toString());
+		}
+		return apiQueryParamRepository.save(apiQueryParam);
+	}
+	
+	@GetMapping(value = "/{pid}/api/{apiDocId}/{apiId}/queryparams", 
+			produces = { MediaType.APPLICATION_JSON_VALUE })
+	public List<ApiQueryParam> getQueryParamsForApi(@PathVariable String apiId){
+		return apiQueryParamRepository.findByIdApiid(apiId);
+	}
+	
+	@DeleteMapping(value = "/api/{apiid}/queryparam/{paramId}", 
+			produces = { MediaType.APPLICATION_JSON_VALUE })
+	public Map<String, String> deleteQueryParam(@PathVariable String paramId, @PathVariable String apiid){
+		Map<String, String> output = new HashMap<>();
+		try {
+			ApiQueryParamPK apiQueryParamPK = new ApiQueryParamPK();
+			apiQueryParamPK.setApiid(apiid);
+			apiQueryParamPK.setParamId(paramId);
+			apiQueryParamRepository.deleteById(apiQueryParamPK);
 			output.put("status", "success");
 		} catch (Exception e) {
 			// TODO: handle exception
