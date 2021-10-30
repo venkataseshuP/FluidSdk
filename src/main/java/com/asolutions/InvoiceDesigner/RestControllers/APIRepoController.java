@@ -17,12 +17,15 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.asolutions.InvoiceDesigner.Entities.ApiHeaderParam;
+import com.asolutions.InvoiceDesigner.Entities.ApiHeaderParamPK;
 import com.asolutions.InvoiceDesigner.Entities.ApiPathParam;
 import com.asolutions.InvoiceDesigner.Entities.ApiPathParamPK;
 import com.asolutions.InvoiceDesigner.Entities.ApiQueryParam;
 import com.asolutions.InvoiceDesigner.Entities.ApiQueryParamPK;
 import com.asolutions.InvoiceDesigner.Entities.ApiRepo;
 import com.asolutions.InvoiceDesigner.Entities.ApiRepoPK;
+import com.asolutions.InvoiceDesigner.Repositories.APIHeaderParamRepository;
 import com.asolutions.InvoiceDesigner.Repositories.APIPathParamRepository;
 import com.asolutions.InvoiceDesigner.Repositories.APIQueryParamRepository;
 import com.asolutions.InvoiceDesigner.Repositories.APIRepoRepository;
@@ -39,6 +42,9 @@ public class APIRepoController {
 	
 	@Autowired
 	private APIQueryParamRepository apiQueryParamRepository;
+	
+	@Autowired
+	private APIHeaderParamRepository apiHeaderParamRepository;
 	
 	@GetMapping(value = "/{pid}/apis/{apidocId}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public List<ApiRepo> getApis(@PathVariable String apidocId, @PathVariable String pid) {
@@ -114,6 +120,50 @@ public class APIRepoController {
 			apiPathParamPK.setApiid(apiid);
 			apiPathParamPK.setParamId(paramId);
 			apiPathParamRepository.deleteById(apiPathParamPK);
+			output.put("status", "success");
+		} catch (Exception e) {
+			// TODO: handle exception
+			output.put("status", "failed");
+		}
+		return output;
+	}
+	
+	@PostMapping(value = "/api/headerparam", 
+			consumes = { MediaType.APPLICATION_JSON_VALUE }, 
+			produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ApiHeaderParam createHeaderParam(@RequestBody ApiHeaderParam apiHeaderParam) {
+		UUID uuid = UUID.randomUUID();
+		apiHeaderParam.getId().setParamId(uuid.toString());
+		return apiHeaderParamRepository.save(apiHeaderParam);
+	}
+	
+	
+	@PutMapping(value = "/api/headerparam", 
+			consumes = { MediaType.APPLICATION_JSON_VALUE }, 
+			produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ApiHeaderParam updateHeaderParam(@RequestBody ApiHeaderParam apiHeaderParam) {
+		if(apiHeaderParam.getId().getParamId() == null) {
+			UUID uuid = UUID.randomUUID();
+			apiHeaderParam.getId().setParamId(uuid.toString());
+		}
+		return apiHeaderParamRepository.save(apiHeaderParam);
+	}
+	
+	@GetMapping(value = "/{pid}/api/{apiDocId}/{apiId}/headerparams", 
+			produces = { MediaType.APPLICATION_JSON_VALUE })
+	public List<ApiHeaderParam> getHeaderParamsForApi(@PathVariable String apiId){
+		return apiHeaderParamRepository.findByIdApiid(apiId);
+	}
+	
+	@DeleteMapping(value = "/api/{apiid}/headerparam/{paramId}", 
+			produces = { MediaType.APPLICATION_JSON_VALUE })
+	public Map<String, String> deleteHeaderParam(@PathVariable String paramId, @PathVariable String apiid){
+		Map<String, String> output = new HashMap<>();
+		try {
+			ApiHeaderParamPK apiHeaderParamPK = new ApiHeaderParamPK();
+			apiHeaderParamPK.setApiid(apiid);
+			apiHeaderParamPK.setParamId(paramId);
+			apiHeaderParamRepository.deleteById(apiHeaderParamPK);
 			output.put("status", "success");
 		} catch (Exception e) {
 			// TODO: handle exception
