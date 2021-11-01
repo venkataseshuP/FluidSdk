@@ -4,18 +4,19 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
 @Entity
-public class ApiRequestTemplate {
+public class ApiResponseTemplate {
 
 	@EmbeddedId
-	private ApiRequestTemplatePK id;
+	private ApiResponseTemplatePK id;
+	
 	private String type;
 	private String templateId;
 	private boolean active;
 	private String description;
-	public ApiRequestTemplatePK getId() {
+	public ApiResponseTemplatePK getId() {
 		return id;
 	}
-	public void setId(ApiRequestTemplatePK id) {
+	public void setId(ApiResponseTemplatePK id) {
 		this.id = id;
 	}
 	public String getType() {
@@ -41,6 +42,6 @@ public class ApiRequestTemplate {
 	}
 	public void setDescription(String description) {
 		this.description = description;
-	}	
-	
+	}
+		
 }

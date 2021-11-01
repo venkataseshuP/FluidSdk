@@ -27,11 +27,14 @@ import com.asolutions.InvoiceDesigner.Entities.ApiRepo;
 import com.asolutions.InvoiceDesigner.Entities.ApiRepoPK;
 import com.asolutions.InvoiceDesigner.Entities.ApiRequestTemplate;
 import com.asolutions.InvoiceDesigner.Entities.ApiRequestTemplatePK;
+import com.asolutions.InvoiceDesigner.Entities.ApiResponseTemplate;
+import com.asolutions.InvoiceDesigner.Entities.ApiResponseTemplatePK;
 import com.asolutions.InvoiceDesigner.Repositories.APIHeaderParamRepository;
 import com.asolutions.InvoiceDesigner.Repositories.APIPathParamRepository;
 import com.asolutions.InvoiceDesigner.Repositories.APIQueryParamRepository;
 import com.asolutions.InvoiceDesigner.Repositories.APIRepoRepository;
 import com.asolutions.InvoiceDesigner.Repositories.APIRequestTemplateRepository;
+import com.asolutions.InvoiceDesigner.Repositories.APIResponseTemplateRepository;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -51,6 +54,9 @@ public class APIRepoController {
 	
 	@Autowired
 	private APIRequestTemplateRepository apiRequestTemplateRepository;
+	
+	@Autowired
+	private APIResponseTemplateRepository apiResponseTemplateRepository;
 	
 	@GetMapping(value = "/{pid}/apis/{apidocId}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public List<ApiRepo> getApis(@PathVariable String apidocId, @PathVariable String pid) {
@@ -258,6 +264,50 @@ public class APIRepoController {
 			apiRequestTemplatePK.setApiid(apiid);
 			apiRequestTemplatePK.setRequestId(requestId);
 			apiRequestTemplateRepository.deleteById(apiRequestTemplatePK);
+			output.put("status", "success");
+		} catch (Exception e) {
+			// TODO: handle exception
+			output.put("status", "failed");
+		}
+		return output;
+	}
+	
+	@PostMapping(value = "/api/responsetemplate", 
+			consumes = { MediaType.APPLICATION_JSON_VALUE }, 
+			produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ApiResponseTemplate createResponseTemplate(@RequestBody ApiResponseTemplate apiResponseTemplate) {
+		UUID uuid = UUID.randomUUID();
+		apiResponseTemplate.getId().setResponseId(uuid.toString());
+		return apiResponseTemplateRepository.save(apiResponseTemplate);
+	}
+	
+	
+	@PutMapping(value = "/api/responsetemplate", 
+			consumes = { MediaType.APPLICATION_JSON_VALUE }, 
+			produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ApiResponseTemplate updateResponseTemplate(@RequestBody ApiResponseTemplate apiResponseTemplate) {
+		if(apiResponseTemplate.getId().getResponseId() == null) {
+			UUID uuid = UUID.randomUUID();
+			apiResponseTemplate.getId().setResponseId(uuid.toString());
+		}
+		return apiResponseTemplateRepository.save(apiResponseTemplate);
+	}
+	
+	@GetMapping(value = "/{pid}/api/{apiDocId}/{apiId}/responsetemplates", 
+			produces = { MediaType.APPLICATION_JSON_VALUE })
+	public List<ApiResponseTemplate> getResponseTemplatesForApi(@PathVariable String apiId){
+		return apiResponseTemplateRepository.findByIdApiid(apiId);
+	}
+	
+	@DeleteMapping(value = "/api/{apiid}/requesttemplate/{responseId}", 
+			produces = { MediaType.APPLICATION_JSON_VALUE })
+	public Map<String, String> deleteResponseTemplate(@PathVariable String responseId, @PathVariable String apiid){
+		Map<String, String> output = new HashMap<>();
+		try {
+			ApiResponseTemplatePK apiResponseTemplatePK = new ApiResponseTemplatePK();
+			apiResponseTemplatePK.setApiid(apiid);
+			apiResponseTemplatePK.setResponseId(responseId);
+			apiResponseTemplateRepository.deleteById(apiResponseTemplatePK);
 			output.put("status", "success");
 		} catch (Exception e) {
 			// TODO: handle exception
