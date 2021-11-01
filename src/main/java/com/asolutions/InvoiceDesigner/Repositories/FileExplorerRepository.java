@@ -18,6 +18,7 @@ public interface FileExplorerRepository extends CrudRepository<FileExplorer, Fil
 
 	List<FileExplorer> findByIdPid(String pid);
 	List<FileExplorer> findByIdPidAndParentId(String pid, String parentId);
+	FileExplorer findByIdPidAndId_itemId(String pid, String itemId);
 	@Transactional
 	@Modifying
     @Query(value = "SELECT c.id , c.path , c.type , c.name FROM FileExplorer c WHERE UPPER(c.path) like %:path% and c.id.pid = :pid")

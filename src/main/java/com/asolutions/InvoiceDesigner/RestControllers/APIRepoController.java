@@ -29,12 +29,14 @@ import com.asolutions.InvoiceDesigner.Entities.ApiRequestTemplate;
 import com.asolutions.InvoiceDesigner.Entities.ApiRequestTemplatePK;
 import com.asolutions.InvoiceDesigner.Entities.ApiResponseTemplate;
 import com.asolutions.InvoiceDesigner.Entities.ApiResponseTemplatePK;
+import com.asolutions.InvoiceDesigner.Entities.FileExplorer;
 import com.asolutions.InvoiceDesigner.Repositories.APIHeaderParamRepository;
 import com.asolutions.InvoiceDesigner.Repositories.APIPathParamRepository;
 import com.asolutions.InvoiceDesigner.Repositories.APIQueryParamRepository;
 import com.asolutions.InvoiceDesigner.Repositories.APIRepoRepository;
 import com.asolutions.InvoiceDesigner.Repositories.APIRequestTemplateRepository;
 import com.asolutions.InvoiceDesigner.Repositories.APIResponseTemplateRepository;
+import com.asolutions.InvoiceDesigner.Repositories.FileExplorerRepository;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -57,6 +59,9 @@ public class APIRepoController {
 	
 	@Autowired
 	private APIResponseTemplateRepository apiResponseTemplateRepository;
+	
+	@Autowired
+	private FileExplorerRepository explorerRepository;
 	
 	@GetMapping(value = "/{pid}/apis/{apidocId}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public List<ApiRepo> getApis(@PathVariable String apidocId, @PathVariable String pid) {
@@ -251,8 +256,14 @@ public class APIRepoController {
 	
 	@GetMapping(value = "/{pid}/api/{apiDocId}/{apiId}/requesttemplates", 
 			produces = { MediaType.APPLICATION_JSON_VALUE })
-	public List<ApiRequestTemplate> getRequestTemplatesForApi(@PathVariable String apiId){
-		return apiRequestTemplateRepository.findByIdApiid(apiId);
+	public List<ApiRequestTemplate> getRequestTemplatesForApi(@PathVariable String apiId, @PathVariable String pid){
+		List<ApiRequestTemplate> requestTemplates = apiRequestTemplateRepository.findByIdApiid(apiId);
+		for(ApiRequestTemplate requestTemplate: requestTemplates) {
+			FileExplorer explorer = explorerRepository.findByIdPidAndId_itemId(pid, requestTemplate.getTemplateId());
+			if(explorer != null)
+				requestTemplate.setTemplatename(explorer.getName());
+		}
+		return requestTemplates;
 	}
 	
 	@DeleteMapping(value = "/api/{apiid}/requesttemplate/{requestId}", 
@@ -295,8 +306,14 @@ public class APIRepoController {
 	
 	@GetMapping(value = "/{pid}/api/{apiDocId}/{apiId}/responsetemplates", 
 			produces = { MediaType.APPLICATION_JSON_VALUE })
-	public List<ApiResponseTemplate> getResponseTemplatesForApi(@PathVariable String apiId){
-		return apiResponseTemplateRepository.findByIdApiid(apiId);
+	public List<ApiResponseTemplate> getResponseTemplatesForApi(@PathVariable String apiId, @PathVariable String pid){
+		List<ApiResponseTemplate> responsetemplates = apiResponseTemplateRepository.findByIdApiid(apiId);
+		for(ApiResponseTemplate responsetemplate: responsetemplates) {
+			FileExplorer explorer = explorerRepository.findByIdPidAndId_itemId(pid, responsetemplate.getTemplateId());
+			if(explorer != null)
+				responsetemplate.setTemplatename(explorer.getName());
+		}
+		return responsetemplates;
 	}
 	
 	@DeleteMapping(value = "/api/{apiid}/requesttemplate/{responseId}", 

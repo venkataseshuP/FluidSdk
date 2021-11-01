@@ -2,6 +2,7 @@ package com.asolutions.InvoiceDesigner.Entities;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 
 @Entity
 public class ApiResponseTemplate {
@@ -11,6 +12,8 @@ public class ApiResponseTemplate {
 	
 	private String type;
 	private String templateId;
+	@Transient
+	private String templatename;
 	private boolean active;
 	private String description;
 	public ApiResponseTemplatePK getId() {
@@ -43,5 +46,12 @@ public class ApiResponseTemplate {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	public String getTemplatename() {
+		return templatename;
+	}
+	public void setTemplatename(String templatename) {
+		this.templatename = templatename;
+	}
+	
 		
 }
