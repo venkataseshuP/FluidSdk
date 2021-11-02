@@ -39,6 +39,8 @@ public class TemplateRestController {
 	@Autowired
 	private FileExplorerRepository fileExplorerRepository;
 	@Autowired
+	private FileExplorerRestController fileExplorerRestController;
+	@Autowired
 	private TemplateRepository templateRepository;
 	@Autowired
 	private TypesrepoRepository typesrepoRepository;
@@ -157,6 +159,30 @@ public class TemplateRestController {
 			response.add(templateDetails);
 		}
 		return response;	
+	}
+	
+	@GetMapping(value="{pid}/findByTypeNameAndType/{type}/{typeName}")
+	public List<HashMap<String, Object>> findByTypeNameAndType(@PathVariable String pid, @PathVariable String type, @PathVariable String typeName){
+		HashMap<String, String> templateIdWisePath =  new HashMap<>();
+		List<HashMap<String, Object>> types = new ArrayList<>();
+		List<Object[]> allTypes = typesrepoRepository.findByTypeNameAndType(typeName, type);
+				for(Object[] typedata: allTypes) {
+					HashMap<String, Object> typedetails = new HashMap<>();
+					typedetails.put("id", typedata[0]);
+					typedetails.put("templateId", typedata[3]);
+					typedetails.put("typeName", typedata[1]);
+					typedetails.put("type", typedata[2]);
+					typedetails.put("templateName", "");
+					if(!templateIdWisePath.containsKey(typedata[3].toString())) {
+						String path = fileExplorerRestController.getFileFullPath(typedata[3].toString() ,pid);
+						typedetails.put("path", path);
+						templateIdWisePath.put(typedata[3].toString(), path);
+					}else {
+						typedetails.put("path", templateIdWisePath.get(typedata[3].toString()));
+					}
+					types.add(typedetails);
+				}
+		return types;
 	}
 	
 	

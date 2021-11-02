@@ -152,7 +152,7 @@ public class FileExplorerRestController {
 
 	}
 
-	private String getFileFullPath(String itemId, String pid) {
+	public String getFileFullPath(String itemId, String pid) {
 		StringBuilder path = new StringBuilder();
 		if (itemId != null && pid != null) {
 			Optional<FileExplorer> explorer = null;
@@ -236,6 +236,7 @@ public class FileExplorerRestController {
 	@PostMapping(value = "/{pid}/filesByType/{type}")
 	public List<Object[]> getFilesBySampleType(@RequestBody String samplepath, @PathVariable String type, @PathVariable String pid) {
 		return fileExplorerRepository.findByIdPidAndTypeAndPath(pid, type, samplepath);
-	}	
+	}
+	
 
 }
