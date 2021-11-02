@@ -2,6 +2,7 @@ package com.asolutions.InvoiceDesigner.Entities;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 
 @Entity
 public class ApiPathParam  {
@@ -12,6 +13,8 @@ public class ApiPathParam  {
 	private String paramName;
 	private String template;
 	private String paramType;
+	@Transient
+	private String paramTypename;
 	private String description;
 	private boolean active;
 	
@@ -50,6 +53,12 @@ public class ApiPathParam  {
 	}
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+	public String getParamTypename() {
+		return paramTypename;
+	}
+	public void setParamTypename(String paramTypename) {
+		this.paramTypename = paramTypename;
 	}
 	
 	

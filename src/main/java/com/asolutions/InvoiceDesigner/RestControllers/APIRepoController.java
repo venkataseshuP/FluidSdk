@@ -130,7 +130,14 @@ public class APIRepoController {
 	@GetMapping(value = "/{pid}/api/{apiDocId}/{apiId}/pathparams", 
 			produces = { MediaType.APPLICATION_JSON_VALUE })
 	public List<ApiPathParam> getPathParamsForApi(@PathVariable String apiId){
-		return apiPathParamRepository.findByIdApiid(apiId);
+		List<ApiPathParam> params = apiPathParamRepository.findByIdApiid(apiId);
+		for(ApiPathParam pathParam: params) {
+			Typesrepo typesrepo =  typesrepoRepository.findByIdTypeId(pathParam.getParamType());
+			if(typesrepo != null) {
+				pathParam.setParamTypename(typesrepo.getTypeName());
+			}
+		}
+		return params;
 	}
 	
 	@DeleteMapping(value = "/api/{apiid}/pathparam/{paramId}", 
