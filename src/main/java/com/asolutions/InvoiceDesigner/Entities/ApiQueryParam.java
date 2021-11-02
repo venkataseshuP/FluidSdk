@@ -2,6 +2,7 @@ package com.asolutions.InvoiceDesigner.Entities;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 
 @Entity
 public class ApiQueryParam {
@@ -12,6 +13,8 @@ public class ApiQueryParam {
 	private String paramName;
 	private String template;
 	private String paramType;
+	@Transient
+	private String paramTypename;
 	private String description;
 	private boolean mandatory;
 	private String defaultvalue;
@@ -59,5 +62,12 @@ public class ApiQueryParam {
 	public void setDefaultvalue(String defaultvalue) {
 		this.defaultvalue = defaultvalue;
 	}
+	public String getParamTypename() {
+		return paramTypename;
+	}
+	public void setParamTypename(String paramTypename) {
+		this.paramTypename = paramTypename;
+	}
+	
 	
 }

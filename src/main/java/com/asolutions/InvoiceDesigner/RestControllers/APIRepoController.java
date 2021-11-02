@@ -30,6 +30,7 @@ import com.asolutions.InvoiceDesigner.Entities.ApiRequestTemplatePK;
 import com.asolutions.InvoiceDesigner.Entities.ApiResponseTemplate;
 import com.asolutions.InvoiceDesigner.Entities.ApiResponseTemplatePK;
 import com.asolutions.InvoiceDesigner.Entities.FileExplorer;
+import com.asolutions.InvoiceDesigner.Entities.Typesrepo;
 import com.asolutions.InvoiceDesigner.Repositories.APIHeaderParamRepository;
 import com.asolutions.InvoiceDesigner.Repositories.APIPathParamRepository;
 import com.asolutions.InvoiceDesigner.Repositories.APIQueryParamRepository;
@@ -37,6 +38,7 @@ import com.asolutions.InvoiceDesigner.Repositories.APIRepoRepository;
 import com.asolutions.InvoiceDesigner.Repositories.APIRequestTemplateRepository;
 import com.asolutions.InvoiceDesigner.Repositories.APIResponseTemplateRepository;
 import com.asolutions.InvoiceDesigner.Repositories.FileExplorerRepository;
+import com.asolutions.InvoiceDesigner.Repositories.TypesrepoRepository;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -62,6 +64,9 @@ public class APIRepoController {
 	
 	@Autowired
 	private FileExplorerRepository explorerRepository;
+	
+	@Autowired
+	private TypesrepoRepository typesrepoRepository;
 	
 	@GetMapping(value = "/{pid}/apis/{apidocId}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public List<ApiRepo> getApis(@PathVariable String apidocId, @PathVariable String pid) {
@@ -213,7 +218,14 @@ public class APIRepoController {
 	@GetMapping(value = "/{pid}/api/{apiDocId}/{apiId}/queryparams", 
 			produces = { MediaType.APPLICATION_JSON_VALUE })
 	public List<ApiQueryParam> getQueryParamsForApi(@PathVariable String apiId){
-		return apiQueryParamRepository.findByIdApiid(apiId);
+		List<ApiQueryParam> queryparams = apiQueryParamRepository.findByIdApiid(apiId);
+		for(ApiQueryParam queryParam: queryparams) {
+			Typesrepo typesrepo =  typesrepoRepository.findByIdTypeId(queryParam.getParamType());
+			if(typesrepo != null) {
+				queryParam.setParamTypename(typesrepo.getTypeName());
+			}
+		}
+		return queryparams;
 	}
 	
 	@DeleteMapping(value = "/api/{apiid}/queryparam/{paramId}", 
