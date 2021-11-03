@@ -102,7 +102,17 @@ public class TemplateRestController {
 	@GetMapping(value="/template/{templateId}/nativecomponents",
 			produces= {MediaType.APPLICATION_JSON_VALUE})
 	public Iterable<Typesrepo> getNativeComponents(@PathVariable String templateId){		
-		return typesrepoRepository.findByTemplateId(templateId);
+		List<Typesrepo> nativecomponents = typesrepoRepository.findByTemplateId(templateId);
+		Optional<Template> template =  templateRepository.findById(templateId);
+		if(template.isPresent() && template.get().getRoottypeId() != null) {
+			Typesrepo typesrepo = new Typesrepo();  
+			typesrepo = typesrepoRepository.findByIdTypeId(template.get().getRoottypeId());
+			if(typesrepo != null) {
+				typesrepo.setType("R");
+			}
+		}
+		nativecomponents.addAll(typesrepoRepository.findByType("PT"));
+		return nativecomponents;
 	}
 //	-------------------------  ComplexType APIs  ------------------------------------------------------
 	
