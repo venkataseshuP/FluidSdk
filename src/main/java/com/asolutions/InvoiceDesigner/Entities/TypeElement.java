@@ -3,23 +3,27 @@ package com.asolutions.InvoiceDesigner.Entities;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 @Entity
 @Table(uniqueConstraints={@UniqueConstraint(columnNames = {"typeId" , "namespaceId", "slNo", "elementName"})})
-public class TypeElements {
+public class TypeElement {
 	
 	@EmbeddedId
-	private TypeElementsPK id;
+	private TypeElementPK id;
 	private String elementName;
 	private String elementTypeId;
 	private String elementDesc;
 	private String minOccurs;
 	private String maxOccurs;
-	public TypeElementsPK getId() {
+	@Transient
+	private Typesrepo typesrepo;
+	
+	public TypeElementPK getId() {
 		return id;
 	}
-	public void setId(TypeElementsPK id) {
+	public void setId(TypeElementPK id) {
 		this.id = id;
 	}
 	public String getElementName() {
@@ -51,6 +55,12 @@ public class TypeElements {
 	}
 	public void setMaxOccurs(String maxOccurs) {
 		this.maxOccurs = maxOccurs;
+	}
+	public Typesrepo getTypesrepo() {
+		return typesrepo;
+	}
+	public void setTypesrepo(Typesrepo typesrepo) {
+		this.typesrepo = typesrepo;
 	}
 	
 	

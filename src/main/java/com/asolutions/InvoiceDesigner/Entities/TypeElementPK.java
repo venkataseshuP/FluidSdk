@@ -5,7 +5,7 @@ import java.io.Serializable;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class TypeElementsPK implements Serializable {
+public class TypeElementPK implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	

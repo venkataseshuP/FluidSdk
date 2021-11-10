@@ -1,8 +1,11 @@
 package com.asolutions.InvoiceDesigner.Entities;
 
+import java.util.List;
+
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 @Entity
@@ -16,6 +19,8 @@ public class Typesrepo {
 	private String typeName;
 	private String desc;
 	private String type;
+	@Transient
+	private List<TypeElement> typeelements;
 	
 	public TypesrepoPK getId() {
 		return id;
@@ -46,6 +51,12 @@ public class Typesrepo {
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+	public List<TypeElement> getTypeelements() {
+		return typeelements;
+	}
+	public void setTypeelements(List<TypeElement> typeelements) {
+		this.typeelements = typeelements;
 	}
 	
 	

@@ -22,7 +22,7 @@ import com.asolutions.InvoiceDesigner.Entities.FileExplorerPK;
 import com.asolutions.InvoiceDesigner.Entities.RefferedTemplate;
 import com.asolutions.InvoiceDesigner.Entities.SimpleType;
 import com.asolutions.InvoiceDesigner.Entities.Template;
-import com.asolutions.InvoiceDesigner.Entities.TypeElements;
+import com.asolutions.InvoiceDesigner.Entities.TypeElement;
 import com.asolutions.InvoiceDesigner.Entities.Typesrepo;
 import com.asolutions.InvoiceDesigner.Repositories.ComplexTypeRepository;
 import com.asolutions.InvoiceDesigner.Repositories.FileExplorerRepository;
@@ -134,16 +134,40 @@ public class TemplateRestController {
 	
 //	-------------------------  TypeElements APIs  ------------------------------------------------------
 	
-	@PostMapping(value="/template/typeelements/typeId/namespaceId",
+	@PostMapping(value="/template/typeelements/{typeId}/{namespaceId}",
 			consumes= {MediaType.APPLICATION_JSON_VALUE},
 			produces= {MediaType.APPLICATION_JSON_VALUE})
-	public Map<String, String> createTypeElements(@PathVariable String typeId,@PathVariable String namespaceId,@RequestBody List<TypeElements> typeElements){
+	public Map<String, String> createTypeElements(@PathVariable String typeId,@PathVariable String namespaceId,@RequestBody List<TypeElement> typeElements){
 		Map<String, String> response = new HashMap<>();
-		for(TypeElements typeElement: typeElements) {
+		for(TypeElement typeElement: typeElements) {
 			typeElementsRepository.save(typeElement);
 		}
 		response.put("Status", "Success");
 		return response;
+	}
+	
+	@GetMapping(value="/template/typeelements/{typeId}/{namespaceId}",
+			produces= {MediaType.APPLICATION_JSON_VALUE})
+	public Typesrepo getTypeelementsForType(@PathVariable String typeId,@PathVariable String namespaceId) {
+		Typesrepo typesrepo = typesrepoRepository.findByIdTypeId(typeId);		
+		return getTypeWithTypeElements(typesrepo);
+	}
+	
+	private Typesrepo getTypeWithTypeElements(Typesrepo typesrepo) {
+		if(typesrepo == null) return typesrepo;
+		List<TypeElement> typeElements = typeElementsRepository.findByIdTypeIdAndId_namespaceId(typesrepo.getId().getTypeId(),typesrepo.getId().getNamespaceId() );
+		for(TypeElement typeElement:typeElements) {
+			typeElement.setTypesrepo(getTypesrepoFromTypeelement(typeElement));
+		}
+		typesrepo.setTypeelements(typeElements);
+		return typesrepo;
+	}
+	
+	private Typesrepo getTypesrepoFromTypeelement(TypeElement typeElement) {
+		if(typeElement == null) return null;
+		Typesrepo typesrepo = typesrepoRepository.findByIdTypeId(typeElement.getElementTypeId());
+		typesrepo = getTypeWithTypeElements(typesrepo);
+		return typesrepo;
 	}
 	
 //	-------------------------  RefferedTemplates APIs  ------------------------------------------------------
@@ -194,7 +218,7 @@ public class TemplateRestController {
 				}
 		return types;
 	}
-	
+		
 	
 }
 

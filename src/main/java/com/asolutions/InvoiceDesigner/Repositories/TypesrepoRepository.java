@@ -17,10 +17,13 @@ import com.asolutions.InvoiceDesigner.Entities.TypesrepoPK;
 public interface TypesrepoRepository extends CrudRepository<Typesrepo, TypesrepoPK>{
 
 	List<Typesrepo> findByTemplateId(String templateId);
+	
 	List<Typesrepo> findByType(String type);
+	
 	@Transactional
 	@Modifying
     @Query(value = "SELECT c.id , c.typeName , c.type , c.templateId FROM Typesrepo c WHERE UPPER(c.typeName) like %:typeName% and c.type =:type")
 	List<Object[]> findByTypeNameAndType(@Param("typeName") String typeName, @Param("type") String type);
+	
 	Typesrepo findByIdTypeId(String typeId);
 }
