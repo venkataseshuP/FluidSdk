@@ -146,6 +146,27 @@ public class TemplateRestController {
 		return response;
 	}
 	
+	
+	@PutMapping(value="/template/typeelements/{typeId}",
+			consumes= {MediaType.APPLICATION_JSON_VALUE},
+			produces= {MediaType.APPLICATION_JSON_VALUE})
+	public Map<String, String> updateTypeElements(@PathVariable String typeId,@RequestBody List<TypeElement> typeElements){
+		Map<String, String> response = new HashMap<>();
+		typeElementsRepository.deleteTypeElementsByTypeId(typeId);
+		for(TypeElement typeElement: typeElements) {
+			typeElementsRepository.save(typeElement);
+		}
+		response.put("Status", "Success");
+		return response;
+	}
+	
+	@PutMapping(value="/template/typeelement/{typeId}",
+			consumes= {MediaType.APPLICATION_JSON_VALUE},
+			produces= {MediaType.APPLICATION_JSON_VALUE})
+	public TypeElement updateTypeElement(@PathVariable String typeId,@RequestBody TypeElement typeElement){		
+		return typeElementsRepository.save(typeElement);
+	}
+	
 	@GetMapping(value="/template/typeelements/{typeId}",
 			produces= {MediaType.APPLICATION_JSON_VALUE})
 	public Typesrepo getTypeelementsForType(@PathVariable String typeId) {
