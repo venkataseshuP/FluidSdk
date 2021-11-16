@@ -146,9 +146,9 @@ public class TemplateRestController {
 		return response;
 	}
 	
-	@GetMapping(value="/template/typeelements/{typeId}/{namespaceId}",
+	@GetMapping(value="/template/typeelements/{typeId}",
 			produces= {MediaType.APPLICATION_JSON_VALUE})
-	public Typesrepo getTypeelementsForType(@PathVariable String typeId,@PathVariable String namespaceId) {
+	public Typesrepo getTypeelementsForType(@PathVariable String typeId) {
 		Typesrepo typesrepo = typesrepoRepository.findByIdTypeId(typeId);		
 		return getTypeWithTypeElements(typesrepo);
 	}
