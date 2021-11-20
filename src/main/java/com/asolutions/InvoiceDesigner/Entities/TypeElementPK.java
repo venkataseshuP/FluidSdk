@@ -11,7 +11,7 @@ public class TypeElementPK implements Serializable {
 	
 	private String typeId;
 	private String namespaceId;
-	private String slNo;
+	private Integer slNo;
 	public String getTypeId() {
 		return typeId;
 	}
@@ -24,10 +24,10 @@ public class TypeElementPK implements Serializable {
 	public void setNamespaceId(String namespaceId) {
 		this.namespaceId = namespaceId;
 	}
-	public String getSlNo() {
+	public Integer getSlNo() {
 		return slNo;
 	}
-	public void setSlNo(String slNo) {
+	public void setSlNo(Integer slNo) {
 		this.slNo = slNo;
 	}
 	public static long getSerialversionuid() {

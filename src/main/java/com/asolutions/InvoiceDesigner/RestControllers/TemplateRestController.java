@@ -2,6 +2,7 @@ package com.asolutions.InvoiceDesigner.RestControllers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -10,6 +11,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.asolutions.InvoiceDesigner.Entities.ComplexType;
 import com.asolutions.InvoiceDesigner.Entities.FileExplorerPK;
 import com.asolutions.InvoiceDesigner.Entities.RefferedTemplate;
+import com.asolutions.InvoiceDesigner.Entities.RefferedTemplatesPK;
 import com.asolutions.InvoiceDesigner.Entities.SimpleType;
 import com.asolutions.InvoiceDesigner.Entities.Template;
 import com.asolutions.InvoiceDesigner.Entities.TypeElement;
@@ -81,6 +84,22 @@ public class TemplateRestController {
 		return "success";	
 	}
 	
+	@PutMapping(value="/template/{templateId}",
+			consumes= {MediaType.APPLICATION_JSON_VALUE})
+	public Typesrepo updateRootElement(@RequestBody Typesrepo nativeType,@PathVariable String templateId) {
+		Template template = null;
+		if(templateRepository.existsById(templateId)) {
+			template = templateRepository.findById(templateId).get();
+		}else {
+			template = new Template();
+			template.setTemplateId(templateId);
+		}
+		template.setRoottypeId(nativeType.getId().getTypeId());
+		templateRepository.save(template);
+		return nativeType;	
+	}
+	
+	
 //	-------------------------  TyesRepo APIs  ------------------------------------------------------
 	
 	@PostMapping(value="/template/typesrep",
@@ -105,10 +124,10 @@ public class TemplateRestController {
 		List<Typesrepo> nativecomponents = typesrepoRepository.findByTemplateId(templateId);
 		Optional<Template> template =  templateRepository.findById(templateId);
 		if(template.isPresent() && template.get().getRoottypeId() != null) {
-			Typesrepo typesrepo = new Typesrepo();  
-			typesrepo = typesrepoRepository.findByIdTypeId(template.get().getRoottypeId());
-			if(typesrepo != null) {
-				typesrepo.setType("R");
+			for(Typesrepo typesrepo:nativecomponents) {
+				if(typesrepo.getId().getTypeId().equals(template.get().getRoottypeId())) {
+					typesrepo.setRoottype(true);
+				}
 			}
 		}
 		nativecomponents.addAll(typesrepoRepository.findByType("PT"));
@@ -170,13 +189,17 @@ public class TemplateRestController {
 	@GetMapping(value="/template/typeelements/{typeId}",
 			produces= {MediaType.APPLICATION_JSON_VALUE})
 	public Typesrepo getTypeelementsForType(@PathVariable String typeId) {
-		Typesrepo typesrepo = typesrepoRepository.findByIdTypeId(typeId);		
+		Typesrepo typesrepo = typesrepoRepository.findByIdTypeId(typeId);
+		Optional<Template> template = templateRepository.findById(typesrepo.getTemplateId());
+		if(template.isPresent() && typesrepo.getId().getTypeId().equals(template.get().getRoottypeId())) {
+			typesrepo.setType("R");
+		}
 		return getTypeWithTypeElements(typesrepo);
 	}
 	
 	private Typesrepo getTypeWithTypeElements(Typesrepo typesrepo) {
 		if(typesrepo == null) return typesrepo;
-		List<TypeElement> typeElements = typeElementsRepository.findByIdTypeIdAndId_namespaceId(typesrepo.getId().getTypeId(),typesrepo.getId().getNamespaceId() );
+		LinkedList<TypeElement> typeElements = typeElementsRepository.findByIdTypeIdAndId_namespaceIdOrderById_slNoAsc(typesrepo.getId().getTypeId(),typesrepo.getId().getNamespaceId() );
 		for(TypeElement typeElement:typeElements) {
 			typeElement.setTypesrepo(getTypesrepoFromTypeelement(typeElement));
 		}
@@ -198,6 +221,14 @@ public class TemplateRestController {
 			produces= {MediaType.APPLICATION_JSON_VALUE})
 	public RefferedTemplate createTypesrepo(@RequestBody RefferedTemplate refferedTemplate){
 		return refferedTemplatesRepository.save(refferedTemplate);
+	}
+	
+	@DeleteMapping(value="/refferedtemplate/{templateId}/{refferedTemplateId}")
+	public void deleteRefferedTemplate(@PathVariable String templateId, @PathVariable String refferedTemplateId){
+		RefferedTemplatesPK refferedTemplate = new RefferedTemplatesPK();
+		refferedTemplate.setRefferedTemplateId(refferedTemplateId);
+		refferedTemplate.setTemplateId(templateId);
+		refferedTemplatesRepository.deleteById(refferedTemplate);		
 	}
 	
 	@GetMapping(value="{pid}/referredtemplates/{templateId}")

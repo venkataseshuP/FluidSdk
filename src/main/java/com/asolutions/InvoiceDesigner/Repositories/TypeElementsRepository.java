@@ -1,6 +1,6 @@
 package com.asolutions.InvoiceDesigner.Repositories;
 
-import java.util.List;
+import java.util.LinkedList;
 
 import javax.transaction.Transactional;
 
@@ -16,7 +16,7 @@ import com.asolutions.InvoiceDesigner.Entities.TypeElementPK;
 @Repository
 public interface TypeElementsRepository extends CrudRepository<TypeElement, TypeElementPK> {
 
-	List<TypeElement> findByIdTypeIdAndId_namespaceId(String typeId, String namespaceId);
+	LinkedList<TypeElement> findByIdTypeIdAndId_namespaceIdOrderById_slNoAsc(String typeId, String namespaceId);
 	@Transactional
 	@Modifying
     @Query(value = "delete from TypeElement where id.typeId =:typeId")
