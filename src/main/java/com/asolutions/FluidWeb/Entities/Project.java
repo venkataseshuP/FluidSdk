@@ -21,7 +21,7 @@ public class Project {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pid")
     @GenericGenerator(
             name = "pid",
-            strategy = "com.asolutions.InvoiceDesigner.SequenceGenerators.StringPrefixedSequenceIdGenerator",
+            strategy = "com.asolutions.FluidWeb.SequenceGenerators.StringPrefixedSequenceIdGenerator",
             parameters = {
                 @Parameter(name = StringPrefixedSequenceIdGenerator.INCREMENT_PARAM, value = "9999"),
                 @Parameter(name = StringPrefixedSequenceIdGenerator.VALUE_PREFIX_PARAMETER, value = "P_"),

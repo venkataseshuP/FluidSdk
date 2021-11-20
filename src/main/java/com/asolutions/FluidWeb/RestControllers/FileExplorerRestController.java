@@ -1,11 +1,14 @@
 package com.asolutions.FluidWeb.RestControllers;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,15 +20,31 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.asolutions.FluidWeb.Configurations.MultiTenantManager;
 import com.asolutions.FluidWeb.Entities.FileExplorer;
 import com.asolutions.FluidWeb.Entities.FileExplorerPK;
 import com.asolutions.FluidWeb.Entities.Template;
+import com.asolutions.FluidWeb.Exceptions.InvalidDbPropertiesException;
+import com.asolutions.FluidWeb.Exceptions.InvalidTenantIdExeption;
+import com.asolutions.FluidWeb.Exceptions.TenantNotFoundException;
+import com.asolutions.FluidWeb.Exceptions.TenantResolvingException;
 import com.asolutions.FluidWeb.Repositories.FileExplorerRepository;
 
 @RestController
 @CrossOrigin(origins = "*")
 public class FileExplorerRestController {
 
+	private static final String MSG_INVALID_TENANT_ID = "[!] DataSource not found for given tenant Id '{}'!";
+	private static final String MSG_INVALID_DB_PROPERTIES_ID = "[!] DataSource properties related to the given tenant ('{}') is invalid!";
+	private static final String MSG_RESOLVING_TENANT_ID = "[!] Could not resolve tenant ID '{}'!";
+	private static final Logger log = LoggerFactory.getLogger(FileExplorerRestController.class);
+		
+	private final MultiTenantManager tenantManager;
+	
+	public FileExplorerRestController(MultiTenantManager tenantManager) {
+		this.tenantManager = tenantManager;
+	}
+	
 	@Autowired
 	private FileExplorerRepository fileExplorerRepository;
 
@@ -69,11 +88,13 @@ public class FileExplorerRestController {
 
 	@GetMapping(value = "/{pid}/files", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public Iterable<FileExplorer> getFiles(@PathVariable String pid) {
+		setTenant("tenant1");
 		return fileExplorerRepository.findByIdPid(pid);
 	}
 
 	@GetMapping(value = "/{pid}/file/{itemId}")
 	public Optional<FileExplorer> getFileById(@PathVariable String itemId, @PathVariable String pid) {
+		setTenant("tenant1");
 		FileExplorerPK explorerPK = new FileExplorerPK();
 		explorerPK.setPid(pid);
 		explorerPK.setItemId(itemId);
@@ -83,6 +104,7 @@ public class FileExplorerRestController {
 
 	@PostMapping(value = "/{pid}/files", consumes = { MediaType.APPLICATION_JSON_VALUE })
 	public String createFiles(@RequestBody FileExplorer[] fileExplorers) {
+		setTenant("tenant1");
 		for (FileExplorer fileExplorer : fileExplorers) {
 			fileExplorerRepository.save(fileExplorer);
 		}
@@ -92,6 +114,7 @@ public class FileExplorerRestController {
 	@PutMapping(value = "/{pid}/file", produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public FileExplorer updateFile(@RequestBody FileExplorer fileExplorer) {
+		setTenant("tenant1");
 		String path = getFileFullPath(fileExplorer.getParentId(), fileExplorer.getId().getPid()) + "/"
 				+ fileExplorer.getName() + getFileExtensionsByType(fileExplorer.getType());
 		fileExplorer.setPath(path);
@@ -104,6 +127,7 @@ public class FileExplorerRestController {
 
 	@DeleteMapping(value = "/{pid}/file/{itemId}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public Map<String, String> deleteFile(@PathVariable String itemId, @PathVariable String pid) {
+		setTenant("tenant1");
 		Map<String, String> output = new HashMap<String, String>();
 		try {
 			FileExplorerPK explorerPK = new FileExplorerPK();
@@ -138,6 +162,7 @@ public class FileExplorerRestController {
 
 	@GetMapping(value = "/{pid}/file/path/{itemId}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public Map<String, String> getFilePath(@PathVariable String pid, @PathVariable String itemId) {
+		setTenant("tenant1");
 		Map<String, String> output = new HashMap<String, String>();
 		StringBuilder path = new StringBuilder();
 		try {
@@ -196,6 +221,7 @@ public class FileExplorerRestController {
 	@GetMapping(value = "/{pid}/file/parent/{itemId}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public Optional<FileExplorer> getFileParentDetails(@PathVariable String pid, @PathVariable String itemId) {
 		try {
+			setTenant("tenant1");
 			Optional<FileExplorer> explorer = Optional.empty();
 			FileExplorerPK explorerPK = new FileExplorerPK();
 			explorerPK.setItemId(itemId);
@@ -230,12 +256,29 @@ public class FileExplorerRestController {
 
 	@PostMapping(value = "/{pid}/filesByPath")
 	public List<Object[]> getFilesBySamplePath(@RequestBody String samplepath, @PathVariable String pid) {
+		setTenant("tenant1");
 		return fileExplorerRepository.findByIdPidAndPath(samplepath, pid);
 	}
 	
 	@PostMapping(value = "/{pid}/filesByType/{type}")
 	public List<Object[]> getFilesBySampleType(@RequestBody String samplepath, @PathVariable String type, @PathVariable String pid) {
+		setTenant("tenant1");
 		return fileExplorerRepository.findByIdPidAndTypeAndPath(pid, type, samplepath);
+	}
+	
+	private void setTenant(String tenantId) {
+		try {
+			tenantManager.setCurrentTenant(tenantId);
+		} catch (SQLException e) {
+			log.error(MSG_INVALID_DB_PROPERTIES_ID, tenantId);
+			throw new InvalidDbPropertiesException();
+		} catch (TenantNotFoundException e) {
+			log.error(MSG_INVALID_TENANT_ID, tenantId);
+			throw new InvalidTenantIdExeption();
+		} catch (TenantResolvingException e) {
+			log.error(MSG_RESOLVING_TENANT_ID, tenantId);
+			throw new InvalidTenantIdExeption();
+		}
 	}
 	
 
