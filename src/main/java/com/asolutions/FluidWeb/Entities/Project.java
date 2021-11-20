@@ -1,13 +1,9 @@
 package com.asolutions.FluidWeb.Entities;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -28,11 +24,7 @@ public class Project {
                 @Parameter(name = StringPrefixedSequenceIdGenerator.NUMBER_FORMAT_PARAMETER, value = "%07d") })
 	private String pid;
 	private String projectName;
-	
-	@ManyToMany(mappedBy = "projects")
-	private Set<User> users = new HashSet<>();
-	
-//	getters and setters
+		
 	public String getId() {
 		return pid;
 	}
@@ -45,7 +37,5 @@ public class Project {
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
 	}
-	
-	
-	
+		
 }
