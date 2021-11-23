@@ -96,10 +96,18 @@ public class MultiTenantManager {
 				.build();
 
 		// Check that new connection is 'live'. If not - throw exception
-		try(Connection c = dataSource.getConnection()) {
+		Connection con = null;
+		try {
+			con = dataSource.getConnection();
 			tenantDataSources.put(tenantId, dataSource);
 			multiTenantDataSource.afterPropertiesSet();
 			log.debug("[d] Tenant '{}' added.", tenantId);
+		}catch (Exception e) {
+			throw e;
+		}finally {
+			if(con != null) {
+				con.close();
+			}
 		}
 	}
 

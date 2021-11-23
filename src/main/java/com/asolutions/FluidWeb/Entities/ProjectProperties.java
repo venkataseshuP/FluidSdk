@@ -2,6 +2,7 @@ package com.asolutions.FluidWeb.Entities;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 @Entity
 public class ProjectProperties {
@@ -12,6 +13,8 @@ public class ProjectProperties {
 	private String userName;
 	private String password;
 	private String driverClass;
+	@OneToOne(mappedBy = "properties")
+	private Project project;
 	public String getPid() {
 		return pid;
 	}
