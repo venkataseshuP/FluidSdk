@@ -40,7 +40,7 @@ public class FileExplorerRestController {
 
 	@PostMapping(value = "/{pid}/file", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public FileExplorer createFile(@RequestBody FileExplorer fileExplorer, @PathVariable String pid) {
+	public FileExplorer createFile(@RequestBody FileExplorer fileExplorer, @PathVariable String pid) {		
 		FileExplorerPK fileExplorerPK = new FileExplorerPK();
 		fileExplorerPK.setPid(pid);
 		UUID uuid = UUID.randomUUID();
@@ -163,8 +163,9 @@ public class FileExplorerRestController {
 			if (explorer.isPresent() && explorer.get().getParentId() != null) {
 				path.append(getFileFullPath(explorer.get().getParentId(), pid));
 			}
-			path.append("/");
-			path.append(explorer.get().getName());
+				path.append("/");
+				path.append(explorer.get().getName());
+			
 		}
 		if (!path.isEmpty()) {
 			path.append(getfileExtenstion(itemId, pid));

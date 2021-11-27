@@ -70,15 +70,9 @@ public class ProjectRestController extends AbstractController {
 			Connection con = null;
 			try {
 				con = dataSource.getConnection();
-				UUID uuid = UUID.randomUUID();
-				String uuidNo = uuid.toString();
 				Statement statement = con.createStatement();
-				String query = "INSERT INTO FILE_EXPLORER(ID,PID,NAME,PARENT_ID,TYPE,PATH) VALUES('FE_0000001','"+uuidNo+"','Home','','1','/Home')";
+				String query = "INSERT INTO FILE_EXPLORER(ID,PID,NAME,PARENT_ID,TYPE,PATH) VALUES('FE_0000001','"+project.getPid()+"','Home',null,'1','/Home')";
 				statement.execute(query);
-				if(project.getPid() == null) {
-					project.setPid(uuidNo);
-					project.getProperties().setPid(uuidNo);
-				}
 				project.setInit(true);
 				projectRepository.save(project);
 				try {
