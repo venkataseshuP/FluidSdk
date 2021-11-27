@@ -35,7 +35,7 @@ public class PreRequestInterceptor implements HandlerInterceptor {
 	      HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 	      String tenantId = request.getHeader("tenantId");
 	      log.info("tentanId assigned value :"+tenantId);
-	      if(tenantId == null) {
+	      if(tenantId == null || tenantId == "") {
 	    	  tenantId = "common";
 	      }
 	      setTenant(tenantId);

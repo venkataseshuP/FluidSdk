@@ -1,15 +1,8 @@
 package com.asolutions.FluidWeb.Entities;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 
 @Entity
 public class User {
@@ -20,13 +13,18 @@ public class User {
 	private boolean emailVerified = false;
 	private String displayName;
 	private String photoURL;
-
-	@ManyToMany(cascade = { CascadeType.DETACH },  fetch = FetchType.EAGER)
-	@JoinTable(name = "User_Project", joinColumns = { @JoinColumn(name = "uid") }, inverseJoinColumns = {
-			@JoinColumn(name = "pid") })
-	Set<Project> projects = new HashSet<>();
+	@Column(name="PREFFEREDPROJECT")
+	private String prefferedProject;
 
 //	getters and setters
+
+	public String getPrefferedProject() {
+		return prefferedProject;
+	}
+
+	public void setPrefferedProject(String prefferedProject) {
+		this.prefferedProject = prefferedProject;
+	}
 
 	public String getUid() {
 		return uid;
@@ -66,14 +64,6 @@ public class User {
 
 	public void setPhotoURL(String photoURL) {
 		this.photoURL = photoURL;
-	}
-
-	public Set<Project> getProjects() {
-		return projects;
-	}
-
-	public void setProjects(Set<Project> projects) {
-		this.projects = projects;
 	}
 
 	public void setEmailVerified(boolean emailVerified) {
