@@ -1,5 +1,15 @@
 package com.asolutions.FluidWeb.Configurations;
 
+import static java.lang.String.format;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -14,16 +24,6 @@ import com.asolutions.FluidWeb.Exceptions.TenantResolvingException;
 
 import lombok.extern.slf4j.Slf4j;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-
-import static java.lang.String.format;
-
 
 @Slf4j
 @Configuration
@@ -34,10 +34,7 @@ public class MultiTenantManager {
 	private final DataSourceProperties properties;
 	private static final Logger log = LoggerFactory.getLogger(MultiTenantManager.class);
 
-
-	private Function<String, DataSourceProperties> tenantResolver;
-
-	private AbstractRoutingDataSource multiTenantDataSource;
+	private AbstractRoutingDataSource multiTenantDataSource;	
 
 	public MultiTenantManager(DataSourceProperties properties) {
 		this.properties = properties;
@@ -58,29 +55,10 @@ public class MultiTenantManager {
 		return multiTenantDataSource;
 	}
 
-	public void setTenantResolver(Function<String, DataSourceProperties> tenantResolver) {
-		this.tenantResolver = tenantResolver;
-	}
 
 	public void setCurrentTenant(String tenantId) throws SQLException, TenantNotFoundException, TenantResolvingException {
 		if (tenantIsAbsent(tenantId)) {
-			if (tenantResolver != null) {
-				DataSourceProperties properties;
-				try {
-					properties = tenantResolver.apply(tenantId);					
-					log.debug("[d] Datasource properties resolved for tenant ID '{}'", tenantId);
-				} catch (Exception e) {
-					throw new TenantResolvingException(e, "Could not resolve the tenant!");
-				}
-
-				String url = properties.getUrl();
-				String username = properties.getUsername();
-				String password = properties.getPassword();
-
-				addTenant(tenantId, url, username, password);
-			} else {
-				throw new TenantNotFoundException(format("Tenant %s not found!", tenantId));
-			}
+				throw new TenantNotFoundException(format("Tenant %s not found!", tenantId));			
 		}
 		currentTenant.set(tenantId);
 		log.debug("[d] Tenant '{}' set as current.", tenantId);

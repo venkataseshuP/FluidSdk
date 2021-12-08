@@ -3,6 +3,7 @@ package com.asolutions.FluidWeb.RestControllers;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.sql.DataSource;
@@ -14,6 +15,7 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -97,6 +99,12 @@ public class ProjectRestController extends AbstractController {
 			produces= {MediaType.APPLICATION_JSON_VALUE})
 	public Iterable<Project> getProjects(){
 		return  projectRepository.findAll();
+	}
+	
+	@GetMapping(value="/project/{pid}",
+			produces= {MediaType.APPLICATION_JSON_VALUE})
+	public Optional<Project> getProject(@PathVariable String pid){
+		return  projectRepository.findById(pid);
 	}
 	
 	@PutMapping(value="/project",
